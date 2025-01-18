@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+  <title>Fitness & Weather</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #weather-info, #workout-info, #products-list, #airpollen-info {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+    #products-list li {
+      margin-bottom: 10px;
+    }
+    #weather-img {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fitness, Weather, and Product Recommendations</h1>
+
+  <div>
+    <h2>Weather Information</h2>
+    <p>Get the current weather and fitness suggestions for your location.</p>
+    <div>
+      <input type="text" id="location-input" placeholder="Enter your city" />
+      <button onclick="initialize()">Get Weather</button>
+      <button id="show-toast" onclick="notif.success('Hello from Solid Toast!')">
+        click me
+      </button>
+    </div>
+  </div>
+
+  <div id="weather-info"></div>
+  <div id="airpollen-info"></div>
+  <img id="weather-img" alt="Weather icon" style="width: 10%; height: auto;" />
+  <div id="workout-info"></div>
+  <ul id="products-list"></ul>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+<script src="script.js"></script>
+</html>

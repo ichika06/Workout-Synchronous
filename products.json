@@ -1,0 +1,95 @@
+{
+    "categories": [
+      {
+        "id": 1,
+        "name": "Workout Equipment",
+        "products": [
+          {
+            "id": 101,
+            "name": "Dumbbells Set",
+            "description": "Adjustable dumbbell set with weights ranging from 5 to 50 lbs.",
+            "price": 99.99,
+            "stock": 50,
+            "imageUrl": "https://example.com/images/dumbbells.jpg"
+          },
+          {
+            "id": 102,
+            "name": "Yoga Mat",
+            "description": "Non-slip yoga mat for workouts, 6mm thick.",
+            "price": 29.99,
+            "stock": 100,
+            "imageUrl": "https://example.com/images/yoga-mat.jpg"
+          },
+          {
+            "id": 103,
+            "name": "Resistance Bands",
+            "description": "Set of 5 resistance bands with varying tension levels.",
+            "price": 19.99,
+            "stock": 75,
+            "imageUrl": "https://example.com/images/resistance-bands.jpg"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Fitness Accessories",
+        "products": [
+          {
+            "id": 201,
+            "name": "Fitness Tracker",
+            "description": "Waterproof fitness tracker with heart rate monitor and GPS.",
+            "price": 49.99,
+            "stock": 30,
+            "imageUrl": "https://example.com/images/fitness-tracker.jpg"
+          },
+          {
+            "id": 202,
+            "name": "Water Bottle",
+            "description": "32oz insulated stainless steel water bottle.",
+            "price": 24.99,
+            "stock": 200,
+            "imageUrl": "https://example.com/images/water-bottle.jpg"
+          },
+          {
+            "id": 203,
+            "name": "Gym Gloves",
+            "description": "Padded gym gloves for weightlifting and workouts.",
+            "price": 14.99,
+            "stock": 120,
+            "imageUrl": "https://example.com/images/gym-gloves.jpg"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Supplements",
+        "products": [
+          {
+            "id": 301,
+            "name": "Protein Powder",
+            "description": "Whey protein powder for muscle recovery, 2 lbs.",
+            "price": 39.99,
+            "stock": 60,
+            "imageUrl": "https://example.com/images/protein-powder.jpg"
+          },
+          {
+            "id": 302,
+            "name": "Multivitamins",
+            "description": "Daily multivitamins with essential nutrients.",
+            "price": 19.99,
+            "stock": 80,
+            "imageUrl": "https://example.com/images/multivitamins.jpg"
+          },
+          {
+            "id": 303,
+            "name": "Pre-Workout",
+            "description": "Energy-boosting pre-workout supplement, 30 servings.",
+            "price": 29.99,
+            "stock": 90,
+            "imageUrl": "https://example.com/images/pre-workout.jpg"
+          }
+        ]
+      }
+    ]
+  }
+  

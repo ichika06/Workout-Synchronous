@@ -1,67 +1,47 @@
-body {
-    font-family: 'Rubik', serif;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    background-color: #273444;
-    color: white;
-    background-image: url('assets/bgstatus/bgnight.jpg');
-    background-size: cover;
-    background-attachment: fixed;
-    backdrop-filter: blur(5px) grayscale(0.5) contrast(1.2);
-    background-repeat: no-repeat;
-  }
-  
-  main {
-    padding: 1em;
-  }
-  
-  section {
-    margin-bottom: 2em;
-  }
-  
-  h2 {
-    color: #4caf50;
-  }
-  
-  footer {
-    text-align: center;
-    padding: 1em;
-    background: #222;
-    color: white;
-  }
+.card-weather {
+    width: 20%;
+}
 
-  .content-weather-info
-  {
-    background: rgba(151, 161, 172, 0.18);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(9.1px);
-    border-radius: 53% 43% 30% 49% / 47% 52% 48% 48%;
-    width: 394px;
-    height: 272px;
-  }
+.top-status {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 15%;
+    align-items: center;
+}
 
+#forecast-wrapper {
+    width: 100%;
+    height: 200px;
+    border-radius: 13px;
+    margin-right: 5%;
+    margin-left: 5%;
+    overflow: hidden;
+    position: relative;
+}
 
-#location-input {
-  background-color: rgba(114, 121, 129, 0.507);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  color: white;
+.forecast-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: smaller;
+}
+
+.forecast-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    font-size: smaller;
+    margin: 5px;
 }
 
 
-#submit-location {
-  background-color: rgba(114, 121, 129, 0.507);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  color: white;
-  backdrop-filter: blur(8px);
-  padding: 10px 20px;
-  -webkit-backdrop-filter: blur(9.1px);
-  transition: all 200ms;
-  cursor: pointer;
-}
+.head-infos
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-#submit-location:hover {
-  background-color: rgba(38, 39, 41, 0.8);
 }
-  

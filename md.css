@@ -1,0 +1,67 @@
+:root {
+  --md-ref-typeface-brand: 'Roboto';
+  --md-ref-typeface-plain: 'Roboto';
+  --md-sys-typescale-body-medium-size: 1rem;
+  --md-sys-typescale-body-medium-line-height: 1.5rem;
+  --md-sys-shape-corner-small: 4px;
+  --md-sys-shape-corner-medium: 6px;
+  --md-sys-shape-corner-large: 8px;
+  --md-sys-color-surface: #b3b3b3;
+  --md-filled-button-container-shape: 0px;
+  --md-card-background-color: var(--md-sys-color-surface);
+  --md-card-color: var(--md-sys-color-on-surface);
+  --md-sys-color-primary: #BB86FC;
+  --md-sys-color-on-primary: #1D1C1F;
+  --md-sys-color-on-surface: #E6E1E5;
+  --md-sys-color-background: #131214;
+  --md-sys-color-outline: #BB86FC;
+  --md-menu-container-color: var(--md-sys-color-on-primary);
+  --md-menu-container-shape: 8px;
+  --md-sys-typescale-body-large-font: system-ui;
+}
+
+
+md-menu-item {
+  border-radius: 8px;
+}
+
+md-menu-item::part(focus-ring) {
+  border-radius: 8px;
+}
+
+md-filled-button.error {
+  --md-filled-button-container-color: var(--md-sys-color-error);
+  --md-filled-button-label-text-color: var(--md-sys-color-on-error);
+}
+
+.dark {
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-surface);
+}
+
+.md-card {
+  background-color: var(--md-sys-color-on-primary);
+  color: var(--md-sys-color-on-surface);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--md-sys-elevation-level1);
+}
+
+
+
+.forecast-container {
+  background-color: var(--md-sys-color-on-primary);
+}
+
+
+.surface {
+  position: relative;
+  border-radius: 16px;
+  height: 64px;
+  width: 64px;
+}
+
+:root {
+  --md-elevation-level: 5;
+  --md-sys-color-shadow: #006A6A;
+}

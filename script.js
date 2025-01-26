@@ -1,9 +1,7 @@
 var notif = new Notyf();
 
 const weatherAPIKey = "0d87f5672d1d4873a2d14308251901"; // Replace with your WeatherAPI.com key
-const ecommerceAPI = "https://fakestoreapi.com/products";
-const wgerAPIUrl = "https://wger.de/api/v2/";
-
+const ecommerceAPI = "https://fakeproductsapi.glitch.me/categories"; // Replace with actual product API URL
 const weatherIconMapping = {
   1000: "assets/status/animated/clear-day.svg",
   1003: "assets/status/animated/cloudy-1-day.svg",
@@ -41,21 +39,28 @@ async function fetchCityAndCountry(lat, lon) {
 
 async function fetchCurrentWeather(city) {
   try {
-    const endpoint = `https://api.weatherapi.com/v1/current.json?key=${weatherAPIKey}&q=${encodeURIComponent(city)}`;
+    const endpoint = `https://api.weatherapi.com/v1/forecast.json?key=${weatherAPIKey}&q=${encodeURIComponent(city)}&days=1`;
     const response = await fetch(endpoint);
     const data = await response.json();
 
-    if (data && data.current) {
+    if (data && data.current && data.forecast && data.forecast.forecastday.length > 0) {
       const weather = data.current;
+      const today = data.forecast.forecastday[0];
       const conditionCode = weather.condition.code;
-      const temperature = weather.temp_c;
+      const currentTemp = weather.temp_c;
+      const conditionText = weather.condition.text;
+      const tempMax = today.day.maxtemp_c;
+      const tempMin = today.day.mintemp_c;
+      const date = new Date(today.date).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 
       document.getElementById("city").textContent = city;
-      document.getElementById("weather-info").textContent = weather.condition.text;
-      document.getElementById("weather-status").textContent = `${temperature}°C`;
+      document.getElementById("weather-info").innerHTML = `
+        ${date}<br>${conditionText}<br>High: ${tempMax}°C | Low: ${tempMin}°C
+      `;
+      document.getElementById("weather-status").textContent = `${currentTemp}°C`;
 
       updateWeatherImageWithCode(conditionCode);
-      return weather.condition.text.toLowerCase();
+      return conditionCode; // Return the condition code for fitness recommendations
     } else {
       notif.error("Error retrieving weather data.");
       return null;
@@ -67,70 +72,98 @@ async function fetchCurrentWeather(city) {
   }
 }
 
-async function fetchForecastWeather(city) {
+async function fetchForecastWeather(city){
   try {
     const endpoint = `https://api.weatherapi.com/v1/forecast.json?key=${weatherAPIKey}&q=${encodeURIComponent(city)}&days=5`;
     const response = await fetch(endpoint);
     const data = await response.json();
 
     if (data && data.forecast && data.forecast.forecastday.length > 0) {
-      const today = data.forecast.forecastday[0];
-      document.getElementById("airpollen-info").textContent = `UV Index: ${today.day.uv}`;
+      const forecastContainer = document.getElementById("forecast-container");
+      forecastContainer.innerHTML = ""; // Clear previous forecast data
+
+      data.forecast.forecastday.forEach((day) => {
+        const date = new Date(day.date).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+        const condition = day.day.condition.text;
+        const tempMax = day.day.maxtemp_c;
+        const tempMin = day.day.mintemp_c;
+        const iconUrl = day.day.condition.icon;
+
+        const forecastItem = `
+          <div class="forecast-item ">
+            <h4>${date}</h4>
+            <img src="${iconUrl}" alt="${condition}" />
+            <p>${condition}</p>
+            <p>High: ${tempMax}°C | Low: ${tempMin}°C</p>
+          </div>
+        `;
+        forecastContainer.innerHTML += forecastItem;
+      });
     } else {
-      document.getElementById("airpollen-info").textContent = "No air and pollen data available.";
+      document.getElementById("forecast-container").innerHTML = "No forecast data available.";
     }
   } catch (error) {
     console.error("Error fetching forecast weather:", error);
+    document.getElementById("forecast-container").innerHTML = "Error loading forecast data.";
   }
 }
 
-async function fetchWorkoutSuggestions(weatherText) {
-  try {
-    const endpoint = `${wgerAPIUrl}exercise/?limit=5`;
-    const response = await fetch(endpoint);
-    const data = await response.json();
-    let workoutMessage = "Suggested workouts: ";
-
-    if (weatherText.includes("sunny") || weatherText.includes("clear")) {
-      workoutMessage += "Try outdoor activities like jogging or cycling.";
-    } else if (weatherText.includes("rainy") || weatherText.includes("stormy")) {
-      workoutMessage += "Indoor exercises such as yoga or pilates are recommended.";
-    } else {
-      workoutMessage += "Consider a mix of indoor and outdoor exercises.";
-    }
-
-    document.getElementById("workout-info").textContent = workoutMessage;
-  } catch (error) {
-    console.error("Error fetching workout suggestions:", error);
-  }
-}
-
-async function fetchFitnessProducts() {
+async function fetchFitnessProducts(conditionCode) {
   try {
     const response = await fetch(ecommerceAPI);
-    const products = await response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
     const productList = document.getElementById("products-list");
-    productList.innerHTML = "";
+    productList.innerHTML = ""; // Clear the product list
 
-    products.forEach((product) => {
+    // Dynamic mapping of categories
+    const categoryMapping = {
+      1000: "Workout Equipment", // Clear weather
+      1063: "Fitness Accessories", // Light rain
+      1066: "Fitness Accessories", // Snow
+      1003: "Supplements", // Cloudy
+      1006: "Supplements", // Overcast
+    };
+
+    const categoryName = categoryMapping[conditionCode] || "General Fitness"; // Default to a general category
+    const selectedCategory = data.find((category) => category.name === categoryName);
+
+    const recommendations = selectedCategory ? selectedCategory.products : [];
+
+    if (recommendations.length === 0) {
+      productList.innerHTML = "<li>No recommended products available for the current weather.</li>";
+      return;
+    }
+
+    // Render the recommended products
+    recommendations.forEach((product) => {
       const li = document.createElement("li");
-      li.textContent = `${product.title} - $${product.price}`;
+      li.innerHTML = `
+        <div class="product-item">
+          <img src="${product.imageUrl}" alt="${product.name}" />
+          <h4>${product.name}</h4>
+          <p>${product.description}</p>
+          <p><strong>$${product.price}</strong> | Stock: ${product.stock}</p>
+        </div>
+      `;
       productList.appendChild(li);
     });
   } catch (error) {
     console.error("Error fetching fitness products:", error);
+    notif.error("Unable to load fitness products.");
   }
 }
 
 document.getElementById("submit-location").addEventListener("click", async () => {
   const cityInput = document.getElementById("location-input").value.trim();
   if (cityInput) {
-    const weatherText = await fetchCurrentWeather(cityInput);
-    if (!weatherText) return;
+    const conditionCode = await fetchCurrentWeather(cityInput);
+    if (!conditionCode) return;
 
-    fetchForecastWeather(cityInput);
-    fetchWorkoutSuggestions(weatherText);
-    fetchFitnessProducts();
+    fetchForecastWeather(cityInput); // Fetch the 5-day weather forecast
+    fetchFitnessProducts(conditionCode); // Fetch fitness products based on weather condition code
   } else {
     notif.error("Please enter a city name.");
   }
@@ -148,12 +181,11 @@ async function initialize() {
       const locationData = await fetchCityAndCountry(latitude, longitude);
 
       if (locationData.city && locationData.country) {
-        const weatherText = await fetchCurrentWeather(locationData.city);
-        if (!weatherText) return;
+        const conditionCode = await fetchCurrentWeather(locationData.city);
+        if (!conditionCode) return;
 
-        fetchForecastWeather(locationData.city);
-        fetchWorkoutSuggestions(weatherText);
-        fetchFitnessProducts();
+        fetchForecastWeather(locationData.city); // Fetch the 5-day weather forecast
+        fetchFitnessProducts(conditionCode); // Fetch fitness products based on weather condition code
       }
     },
     (error) => {
@@ -164,4 +196,3 @@ async function initialize() {
 }
 
 initialize();
-

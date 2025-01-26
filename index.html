@@ -4,36 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <link rel="stylesheet" href="md.css">
+  <link rel="stylesheet" href="https://unpkg.com/@material/web@latest/mdc.min.css">
+  <script src="https://unpkg.com/@material/web@latest/mdc.min.js" defer></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <title>Fitness & Weather</title>
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-    }
-  </style>
 </head>
-<body>
+<body class="dark">
 
   <main>
-    <div class="place-items-center">
+    <span style="position: relative">
+      <md-filled-tonal-button id="usage-anchor">Set with idref</md-filled-tonal-button>
+      <md-menu id="usage-menu" anchor="usage-anchor" class="md-menu">
+        <md-menu-item>
+          <div slot="headline">Apple</div>
+        </md-menu-item>
+        <md-menu-item>
+          <div slot="headline">Banana</div>
+        </md-menu-item>
+        <md-menu-item>
+          <div slot="headline">Cucumber</div>
+        </md-menu-item>
+      </md-menu>
+    </span>
 
-      <div class="content-weather-info relative flex items-center justify-evenly">
-        <div class="items-center content-center place-items-center">
-          <img id="weather-img" style="width: 200px; height: auto;" />
-          <div id="weather-status" class="text-center"></div>
+    <div class="place-items-center">
+      <div class="head-infos">
+        <div class="md-typescale-body-medium md-card card-weather">
+          <div class="top-status md-typescale-body-large">
+            <img id="weather-img" style="width: 200px; height: auto;" />
+            <h2 id="weather-status"></h2>
+          </div>
+    
+          <div>
+            <h3 id="city"></h3>
+            <h3 id="weather-info" class="font-semibold"></h3>
+            <div id="airpollen-info"></div>
+          </div>
         </div>
   
-        <div>
-          <h3 id="city"></h3>
-          <h3 id="weather-info" class="font-semibold"></h3>
-          <div id="airpollen-info"></div>
+        <div id="forecast-wrapper" class="forecast-wrapper">
+          <div id="forecast-container" class="forecast-container md-typescale-label-large">
+            <div class="forecast-item">
+              <md-circular-progress indeterminate></md-circular-progress>
+            </div>
+          </div>
         </div>
       </div>
   
@@ -41,8 +59,12 @@
       <h2 class="">Weather Information</h2>
       <p>Get the current weather and fitness suggestions for your location.</p>
       <div>
-        <input type="text" class="rounded-full block mb-2" id="location-input" placeholder="Enter your city" />
-        <button id="submit-location" class="rounded-full">Get Weather</button>
+        <md-outlined-text-field label="Enter your city" id="location-input">
+        </md-outlined-text-field>
+        <md-filled-tonal-button id="submit-location">
+          Get Weather
+          
+        </md-filled-tonal-button>
         <button id="show-toast" onclick="notif.success('Hello from Solid Toast!')">
           click me
         </button>
@@ -55,17 +77,28 @@
 
 
 </body>
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          clifford: '#da373d',
-        }
-      }
+<script type="importmap">
+  {
+    "imports": {
+      "@material/web/": "https://esm.run/@material/web/"
     }
   }
 </script>
+<script type="module">
+  import '@material/web/all.js';
+  import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+  document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+</script>
+<script type="module">
+  // This example uses anchor as an ID reference
+  const anchorEl = document.body.querySelector('#usage-anchor');
+  const menuEl = document.body.querySelector('#usage-menu');
+
+  anchorEl.addEventListener('click', () => { menuEl.open = !menuEl.open; });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script src="script.js"></script>
 </html>

@@ -12,6 +12,7 @@
   --md-card-color: var(--md-sys-color-on-surface);
   --md-sys-color-primary: #BB86FC;
   --md-sys-color-on-primary: #1D1C1F;
+  --md-sys-color-on-primary-secondary: #181818;
   --md-sys-color-on-surface: #E6E1E5;
   --md-sys-color-background: #131214;
   --md-sys-color-outline: #BB86FC;
@@ -45,6 +46,13 @@ md-filled-button.error {
   border-radius: 12px;
   padding: 16px;
   box-shadow: var(--md-sys-elevation-level1);
+}
+
+.md-card2 {
+  background-color: var(--md-sys-color-on-primary-secondary);
+  color: var(--md-sys-color-on-surface);
+  border-radius: 12px;
+  padding: 16px;
 }
 
 

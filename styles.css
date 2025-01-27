@@ -43,5 +43,35 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
 
+#products-list-wrapper {
+    width: 20%;
+    height: 380px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+#products-list {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3%;
+}
+
+.product-item img {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
 }

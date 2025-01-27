@@ -2,24 +2,29 @@ var notif = new Notyf();
 
 const weatherAPIKey = "0d87f5672d1d4873a2d14308251901"; // Replace with your WeatherAPI.com key
 const ecommerceAPI = "https://fakeproductsapi.glitch.me/categories"; // Replace with actual product API URL
+
 const weatherIconMapping = {
-  1000: "assets/status/animated/clear-day.svg",
-  1003: "assets/status/animated/cloudy-1-day.svg",
-  1006: "assets/status/animated/cloudy.svg",
-  1009: "assets/status/animated/cloudy-3-day.svg",
-  1030: "assets/status/animated/fog-day.svg",
-  1063: "assets/status/animated/rainy-1-day.svg",
-  1066: "assets/status/animated/snowy-1-day.svg",
-  1069: "assets/status/animated/snow-and-sleet-mix.svg",
-  default: "assets/status/animated/clear-day.svg",
+  1000: { day: "assets/status/animated/clear-day.svg", night: "assets/status/animated/clear-night.svg" },
+  1003: { day: "assets/status/animated/cloudy-1-day.svg", night: "assets/status/animated/cloudy-1-night.svg" },
+  1006: { day: "assets/status/animated/cloudy.svg", night: "assets/status/animated/cloudy-night.svg" },
+  1009: { day: "assets/status/animated/cloudy-3-day.svg", night: "assets/status/animated/cloudy-3-night.svg" },
+  1030: { day: "assets/status/animated/fog-day.svg", night: "assets/status/animated/fog-night.svg" },
+  1063: { day: "assets/status/animated/rainy-1-day.svg", night: "assets/status/animated/rainy-1-night.svg" },
+  1066: { day: "assets/status/animated/snowy-1-day.svg", night: "assets/status/animated/snowy-1-night.svg" },
+  1069: { day: "assets/status/animated/snow-and-sleet-mix.svg", night: "assets/status/animated/snow-and-sleet-mix.svg" },
+  default: { day: "assets/status/animated/clear-day.svg", night: "assets/status/animated/clear-night.svg" },
 };
 
-function updateWeatherImageWithCode(conditionCode) {
+
+function updateWeatherImageWithCode(conditionCode, isDay) {
   const weatherImg = document.getElementById("weather-img");
-  const customIcon = weatherIconMapping[conditionCode] || weatherIconMapping.default;
+  const customIcon =
+    (weatherIconMapping[conditionCode] && weatherIconMapping[conditionCode][isDay ? "day" : "night"]) ||
+    weatherIconMapping.default[isDay ? "day" : "night"];
   weatherImg.src = customIcon;
-  weatherImg.alt = `Weather icon for condition code ${conditionCode}`;
+  weatherImg.alt = `Weather icon for ${isDay ? "day" : "night"} condition code ${conditionCode}`;
 }
+
 
 async function fetchCityAndCountry(lat, lon) {
   try {
@@ -47,6 +52,7 @@ async function fetchCurrentWeather(city) {
       const weather = data.current;
       const today = data.forecast.forecastday[0];
       const conditionCode = weather.condition.code;
+      const isDay = weather.is_day; // Day (1) or Night (0)
       const currentTemp = weather.temp_c;
       const conditionText = weather.condition.text;
       const tempMax = today.day.maxtemp_c;
@@ -59,7 +65,7 @@ async function fetchCurrentWeather(city) {
       `;
       document.getElementById("weather-status").textContent = `${currentTemp}°C`;
 
-      updateWeatherImageWithCode(conditionCode);
+      updateWeatherImageWithCode(conditionCode, isDay);
       return conditionCode; // Return the condition code for fitness recommendations
     } else {
       notif.error("Error retrieving weather data.");
@@ -71,6 +77,7 @@ async function fetchCurrentWeather(city) {
     return null;
   }
 }
+
 
 async function fetchForecastWeather(city){
   try {
@@ -141,11 +148,15 @@ async function fetchFitnessProducts(conditionCode) {
     recommendations.forEach((product) => {
       const li = document.createElement("li");
       li.innerHTML = `
-        <div class="product-item">
-          <img src="${product.imageUrl}" alt="${product.name}" />
-          <h4>${product.name}</h4>
-          <p>${product.description}</p>
-          <p><strong>$${product.price}</strong> | Stock: ${product.stock}</p>
+        <div class="product-item md-card2" >
+            <img src="${product.imageUrl}" alt="${product.name}"
+             style="border-radius: 13px;"
+            />
+          <div>
+            <h4>${product.name}</h4>
+            <p>${product.description}</p>
+            <p><strong>$${product.price}</strong> | Stock: ${product.stock}</p>
+          </div>
         </div>
       `;
       productList.appendChild(li);

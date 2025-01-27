@@ -16,22 +16,7 @@
 <body class="dark">
 
   <main>
-    <span style="position: relative">
-      <md-filled-tonal-button id="usage-anchor">Set with idref</md-filled-tonal-button>
-      <md-menu id="usage-menu" anchor="usage-anchor" class="md-menu">
-        <md-menu-item>
-          <div slot="headline">Apple</div>
-        </md-menu-item>
-        <md-menu-item>
-          <div slot="headline">Banana</div>
-        </md-menu-item>
-        <md-menu-item>
-          <div slot="headline">Cucumber</div>
-        </md-menu-item>
-      </md-menu>
-    </span>
-
-    <div class="place-items-center">
+    <div class=" ">
       <div class="head-infos">
         <div class="md-typescale-body-medium md-card card-weather">
           <div class="top-status md-typescale-body-large">
@@ -54,25 +39,25 @@
           </div>
         </div>
       </div>
-  
-  
-      <h2 class="">Weather Information</h2>
+    </div>
+
+
+    <h2 class="">Weather Information</h2>
       <p>Get the current weather and fitness suggestions for your location.</p>
       <div>
         <md-outlined-text-field label="Enter your city" id="location-input">
         </md-outlined-text-field>
         <md-filled-tonal-button id="submit-location">
           Get Weather
-          
         </md-filled-tonal-button>
-        <button id="show-toast" onclick="notif.success('Hello from Solid Toast!')">
-          click me
-        </button>
       </div>
-    </div>
-
+    
     <div id="workout-info"></div>
-    <ul id="products-list"></ul>
+    <div id="products-list-wrapper" class="md-card md-typescale-body-medium" >
+      <ul id="products-list" style="list-style: none; padding: 0;">
+
+      </ul>
+    </div>
   </main>
 
 
@@ -89,13 +74,6 @@
   import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
 
   document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
-</script>
-<script type="module">
-  // This example uses anchor as an ID reference
-  const anchorEl = document.body.querySelector('#usage-anchor');
-  const menuEl = document.body.querySelector('#usage-menu');
-
-  anchorEl.addEventListener('click', () => { menuEl.open = !menuEl.open; });
 </script>
 
 

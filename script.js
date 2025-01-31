@@ -134,21 +134,23 @@ async function fetchFitnessProducts(conditionCode) {
       1006: "Supplements", // Overcast
     };
 
-    const categoryName = categoryMapping[conditionCode] || "General Fitness"; // Default to a general category
-    const selectedCategory = data.find((category) => category.name === categoryName);
+    const categoryName = categoryMapping[conditionCode] || "Workout Equipment"; // Default category
 
-    const recommendations = selectedCategory ? selectedCategory.products : [];
+    // Ensure category matching is case-insensitive and ignores extra spaces
+    const selectedCategory = data.find((category) =>
+      category.name.toLowerCase().trim() === categoryName.toLowerCase().trim()
+    );
 
-    if (recommendations.length === 0) {
+    if (!selectedCategory || !selectedCategory.products.length) {
       productList.innerHTML = "<li>No recommended products available for the current weather.</li>";
       return;
     }
 
     // Render the recommended products
-    recommendations.forEach((product) => {
+    selectedCategory.products.forEach((product) => {
       const li = document.createElement("li");
       li.innerHTML = `
-        <div class="product-item md-card2" >
+        <div class="product-item md-card2">
             <img src="${product.imageUrl}" alt="${product.name}"
              style="border-radius: 13px;"
             />
@@ -166,6 +168,7 @@ async function fetchFitnessProducts(conditionCode) {
     notif.error("Unable to load fitness products.");
   }
 }
+
 
 document.getElementById("submit-location").addEventListener("click", async () => {
   const cityInput = document.getElementById("location-input").value.trim();

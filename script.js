@@ -1,7 +1,7 @@
 var notif = new Notyf();
 
-const weatherAPIKey = "0d87f5672d1d4873a2d14308251901"; // Replace with your WeatherAPI.com key
-const ecommerceAPI = "https://fakeproductsapi.glitch.me/categories"; // Replace with actual product API URL
+const weatherAPIKey = "0d87f5672d1d4873a2d14308251901";
+const ecommerceAPI = "https://fakeproductsapi.glitch.me/categories";
 
 const weatherIconMapping = {
   1000: { day: "assets/status/animated/clear-day.svg", night: "assets/status/animated/clear-night.svg" },
@@ -52,7 +52,7 @@ async function fetchCurrentWeather(city) {
       const weather = data.current;
       const today = data.forecast.forecastday[0];
       const conditionCode = weather.condition.code;
-      const isDay = weather.is_day; // Day (1) or Night (0)
+      const isDay = weather.is_day;
       const currentTemp = weather.temp_c;
       const conditionText = weather.condition.text;
       const tempMax = today.day.maxtemp_c;
@@ -66,7 +66,7 @@ async function fetchCurrentWeather(city) {
       document.getElementById("weather-status").textContent = `${currentTemp}°C`;
 
       updateWeatherImageWithCode(conditionCode, isDay);
-      return conditionCode; // Return the condition code for fitness recommendations
+      return conditionCode;
     } else {
       notif.error("Error retrieving weather data.");
       return null;
@@ -87,7 +87,7 @@ async function fetchForecastWeather(city){
 
     if (data && data.forecast && data.forecast.forecastday.length > 0) {
       const forecastContainer = document.getElementById("forecast-container");
-      forecastContainer.innerHTML = ""; // Clear previous forecast data
+      forecastContainer.innerHTML = "";
 
       data.forecast.forecastday.forEach((day) => {
         const date = new Date(day.date).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
@@ -123,9 +123,8 @@ async function fetchFitnessProducts(conditionCode) {
     }
     const data = await response.json();
     const productList = document.getElementById("products-list");
-    productList.innerHTML = ""; // Clear the product list
+    productList.innerHTML = "";
 
-    // Dynamic mapping of categories
     const categoryMapping = {
       1000: "Workout Equipment", // Clear weather
       1063: "Fitness Accessories", // Light rain
@@ -134,9 +133,8 @@ async function fetchFitnessProducts(conditionCode) {
       1006: "Supplements", // Overcast
     };
 
-    const categoryName = categoryMapping[conditionCode] || "Workout Equipment"; // Default category
+    const categoryName = categoryMapping[conditionCode] || "Workout Equipment";
 
-    // Ensure category matching is case-insensitive and ignores extra spaces
     const selectedCategory = data.find((category) =>
       category.name.toLowerCase().trim() === categoryName.toLowerCase().trim()
     );
@@ -146,7 +144,6 @@ async function fetchFitnessProducts(conditionCode) {
       return;
     }
 
-    // Render the recommended products
     selectedCategory.products.forEach((product) => {
       const li = document.createElement("li");
       li.innerHTML = `
@@ -176,8 +173,8 @@ document.getElementById("submit-location").addEventListener("click", async () =>
     const conditionCode = await fetchCurrentWeather(cityInput);
     if (!conditionCode) return;
 
-    fetchForecastWeather(cityInput); // Fetch the 5-day weather forecast
-    fetchFitnessProducts(conditionCode); // Fetch fitness products based on weather condition code
+    fetchForecastWeather(cityInput);
+    fetchFitnessProducts(conditionCode);
   } else {
     notif.error("Please enter a city name.");
   }
@@ -198,8 +195,8 @@ async function initialize() {
         const conditionCode = await fetchCurrentWeather(locationData.city);
         if (!conditionCode) return;
 
-        fetchForecastWeather(locationData.city); // Fetch the 5-day weather forecast
-        fetchFitnessProducts(conditionCode); // Fetch fitness products based on weather condition code
+        fetchForecastWeather(locationData.city);
+        fetchFitnessProducts(conditionCode);
       }
     },
     (error) => {

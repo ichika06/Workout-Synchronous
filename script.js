@@ -144,6 +144,7 @@ async function fetchFitnessProducts(conditionCode) {
       return;
     }
 
+    Productnames = [];
     selectedCategory.products.forEach((product) => {
       const li = document.createElement("li");
       li.innerHTML = `
@@ -159,6 +160,7 @@ async function fetchFitnessProducts(conditionCode) {
         </div>
       `;
       productList.appendChild(li);
+      Productnames.push(product.name);
     });
   } catch (error) {
     console.error("Error fetching fitness products:", error);
@@ -175,10 +177,72 @@ document.getElementById("submit-location").addEventListener("click", async () =>
 
     fetchForecastWeather(cityInput);
     fetchFitnessProducts(conditionCode);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await askLlama();
   } else {
     notif.error("Please enter a city name.");
   }
 });
+
+let Productnames = [];
+let cachedResponse = null;
+async function askLlama() {
+  const city = document.getElementById("city").textContent;
+  const conditionCode = document.getElementById("weather-status").textContent;
+  
+  const userMessage = `Suggest fitness and workout routines suitable for the current weather in ${city}, ${conditionCode}, and that can be paired with products such as: ${Productnames.join(", ")}. Format your response with each suggestion having a category (starting with ** and ending with ** for the category), on a new line, without numbering. Provide at least 10 suggestions, including the category, detailed instructions or tutorials related to the categories, and also include step-by-step instructions on how to perform each exercise.`;
+  if (!userMessage) return;
+
+  document.getElementById("workout-suggestion-reponse").innerHTML = "Thinking...";
+
+  try {
+      const res = await fetch("https://backend-for-workout-synchronous.onrender.com/ask-llama", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: [{ role: "user", content: userMessage }] })
+      });
+
+      const data = await res.json();
+      console.log(JSON.stringify(data, null, 2));
+
+      const rateLimitRemaining = res.headers.get("X-RateLimit-Remaining");
+      if (rateLimitRemaining === "0") {
+          console.log("Rate limit reached. Caching the response.");
+          cachedResponse = data;
+      }
+
+      document.getElementById("workout-suggestion-reponse").innerHTML = data.choices?.[0]?.message?.content
+        .split(/\n|\.\s/) 
+        .filter(line => line.trim() !== "")
+        .map(line => {
+          if (line.startsWith("**")) {
+            return `<h3>${line.replace(/\*\*/g, '').trim()}</h3>`;
+          }
+          return `<p>${line.replace(/\*\*/g, '').trim()}</p>`;
+        })
+        .join("") || "No response.";
+
+  } catch (error) {
+      if (cachedResponse) {
+          console.log("Using cached response.");
+          document.getElementById("workout-suggestion-reponse").innerHTML = cachedResponse.choices?.[0]?.message?.content
+            .split(/\n|\.\s/)
+            .filter(line => line.trim() !== "")
+            .map(line => {
+              if (line.startsWith("**")) {
+                return `<h3>${line.replace(/\*\*/g, '').trim()}</h3>`;
+              }
+              return `<p>${line.replace(/\*\*/g, '').trim()}</p>`;
+            })
+            .join("") || "No response.";
+      } else {
+          document.getElementById("workout-suggestion-reponse").innerHTML = `<span style="color: red;">Error: ${error.message}</span>`;
+      }
+  }
+}
+
+
+
 
 async function initialize() {
   if (!navigator.geolocation) {
@@ -198,6 +262,9 @@ async function initialize() {
         fetchForecastWeather(locationData.city);
         fetchFitnessProducts(conditionCode);
       }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await askLlama();
     },
     (error) => {
       console.error("Error fetching location:", error);

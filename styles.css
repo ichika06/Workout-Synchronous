@@ -103,3 +103,10 @@
     height: 100px;
     margin-right: 10px;
 }
+
+.workout-suggestion-reponse {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1%;
+}

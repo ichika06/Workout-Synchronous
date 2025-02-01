@@ -1,49 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Llama AI Chat</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        textarea, button { margin: 10px; padding: 10px; font-size: 16px; width: 80%; }
-        button { cursor: pointer; }
-        #response { margin-top: 20px; font-weight: bold; white-space: pre-wrap; text-align: left; width: 80%; margin: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="md.css">
+  <link rel="stylesheet" href="https://unpkg.com/@material/web@latest/mdc.min.css">
+  <script src="https://unpkg.com/@material/web@latest/mdc.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="assets/icon/weatherfit-icon.ico" type="image/x-icon">
+  <title>Workout Synchronous</title>
 </head>
-<body>
+<body class="dark">
 
-    <h2>Ask Llama AI</h2>
-    <textarea id="userInput" rows="4" placeholder="Type your question..."></textarea><br>
-    <button onclick="askLlama()">Send</button>
+  <header>
+    <div class="header-container">
+      <div class="logo md-typescale-body-medium">
+        <img src="assets/icon/weatherfit-icon.png" alt="x-icon" width="13%" height="15%">
+        <h1>Workout Synchronous</h1>
+      </div>
+      <div class="get-weather-container">
+        <md-outlined-text-field label="Enter your city" id="location-input"
+        >
+        </md-outlined-text-field>
+        <md-filled-tonal-button id="submit-location">
+          Get Weather
+        </md-filled-tonal-button>
+      </div>
 
-    <div id="response"></div>
+      <div>
+        <md-filled-tonal-button onclick="askLlama()">
+          Get
+        </md-filled-tonal-button>
+        
+    </div>
+  </header>
 
-    <script>
-        async function askLlama() {
-            const userMessage = document.getElementById("userInput").value.trim();
-            if (!userMessage) return;
+  <main>
+    <div class=" ">
+      <div class="head-infos">
+        <div class="md-typescale-body-medium md-card card-weather">
+          <div class="top-status md-typescale-body-large">
+            <img id="weather-img" style="width: 100%; height: auto;" />
+            <h2 id="weather-status"></h2>
+          </div>
+    
+          <div>
+            <h3 id="city"></h3>
+            <h3 id="weather-info" class="font-semibold"></h3>
+            <div id="airpollen-info"></div>
+          </div>
+        </div>
+  
+        <div id="forecast-wrapper" class="forecast-wrapper">
+          <div id="forecast-container" class="forecast-container md-typescale-label-large">
+            <div class="forecast-item">
+              <md-circular-progress indeterminate></md-circular-progress>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            document.getElementById("response").innerHTML = "Thinking...";
+    <div>
+      <div id="workout-suggestion-reponse" class="md-typescale-body-medium">
 
-            try {
-                const res = await fetch("https://backend-workout-synchronous.vercel.app/ask-llama", { 
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ messages: [{ role: "user", content: "Hello!" }] })
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error("Error:", error));
+      </div>
+    </div>
 
+    
+    
+    <div id="workout-info"></div>
+    <div id="products-list-wrapper" class="md-card md-typescale-body-medium" >
+      <ul id="products-list" style="list-style: none; padding: 0;">
 
-                const data = await res.json();
-                document.getElementById("response").innerHTML = data.choices?.[0]?.message?.content || "No response.";
-            } catch (error) {
-                document.getElementById("response").innerHTML = `<span style="color: red;">Error: ${error.message}</span>`;
-            }
-        }
-    </script>
+      </ul>
+    </div>
+  </main>
+
 
 </body>
+<script type="importmap">
+  {
+    "imports": {
+      "@material/web/": "https://esm.run/@material/web/"
+    }
+  }
+</script>
+<script type="module">
+  import '@material/web/all.js';
+  import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+  document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+<script src="script.js"></script>
 </html>

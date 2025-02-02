@@ -19,7 +19,7 @@
   <header>
     <div class="header-container">
       <div class="logo md-typescale-body-medium">
-        <img src="assets/icon/weatherfit-icon.png" alt="x-icon" width="13%" height="15%">
+        <img src="assets/icon/weatherfit-icon.png" alt="x-icon" width="8%" height="auto">
         <h1>Workout Synchronous</h1>
       </div>
       <div class="get-weather-container">
@@ -30,59 +30,73 @@
           Get Weather
         </md-filled-tonal-button>
       </div>
-
-      <div>
-        <md-filled-tonal-button onclick="askLlama()">
-          Get
-        </md-filled-tonal-button>
-        
     </div>
   </header>
 
   <main>
-    <div class=" ">
-      <div class="head-infos">
-        <div class="md-typescale-body-medium md-card card-weather">
-          <div class="top-status md-typescale-body-large">
-            <img id="weather-img" style="width: 100%; height: auto;" />
-            <h2 id="weather-status"></h2>
-          </div>
-    
-          <div>
-            <h3 id="city"></h3>
-            <h3 id="weather-info" class="font-semibold"></h3>
-            <div id="airpollen-info"></div>
-          </div>
-        </div>
-  
-        <div id="forecast-wrapper" class="forecast-wrapper">
-          <div id="forecast-container" class="forecast-container md-typescale-label-large">
-            <div class="forecast-item">
-              <md-circular-progress indeterminate></md-circular-progress>
+    <aside>
+      <div class=" ">
+        <div class="head-infos">
+          <div class="md-typescale-body-medium md-card card-weather">
+            <div class="top-status md-typescale-body-large">
+              <img id="weather-img" style="width: 100%; height: auto;" />
+              <h2 id="weather-status"></h2>
+            </div>
+      
+            <div>
+              <h3 id="city"></h3>
+              <h3 id="weather-info" class="font-semibold"></h3>
+              <div id="airpollen-info"></div>
             </div>
           </div>
+    
+          
         </div>
       </div>
-    </div>
-
-    <div>
-      <div id="workout-suggestion-reponse" class="md-typescale-body-medium">
-
+  
+      <div id="products-list-wrapper" class="md-card md-typescale-body-medium" >
+        <ul id="products-list" style="list-style: none; padding: 0;">
+  
+        </ul>
       </div>
-    </div>
+    </aside>
 
-    
-    
-    <div id="workout-info"></div>
-    <div id="products-list-wrapper" class="md-card md-typescale-body-medium" >
-      <ul id="products-list" style="list-style: none; padding: 0;">
+    <div class="main-content">
+      <div id="forecast-wrapper" class="forecast-wrapper">
+        <div id="forecast-container" class="forecast-container md-typescale-label-large">
+          <div class="forecast-item">
+            <md-circular-progress indeterminate></md-circular-progress>
+          </div>
+        </div>
+      </div>
 
-      </ul>
+      <div id="ai-model" class="md-typescale-body-medium">
+        Powered By 
+        <br />
+        <img src="assets/icon/ai-models/Llama-3.3-70B-Instruct.svg" width="auto">
+        <img src="assets/icon/ai-models/open-ai-gpt-4o.svg" width="auto">
+        <img src="assets/icon/ai-models/Mistral Large 24.11.svg" width="auto">
+      </div> 
+  
+      <div class="workout-suggestion-container md-card">
+        <span id="loading-text" class="md-typescale-body-medium"></span>
+        <div id="workout-suggestion-response" class=" md-typescale-body-medium">
+          
+        </div>
+      </div>
     </div>
   </main>
 
-
+  <footer>
+    <div class="footer-container">
+      <div class="md-typescale-body-medium">
+        <p>Powered by AI @2025</p>
+      </div>
+    </div>
+  </footer>
 </body>
+
+
 <script type="importmap">
   {
     "imports": {
@@ -96,8 +110,6 @@
 
   document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
 </script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script src="script.js"></script>
 </html>

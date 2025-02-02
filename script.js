@@ -126,11 +126,11 @@ async function fetchFitnessProducts(conditionCode) {
     productList.innerHTML = "";
 
     const categoryMapping = {
-      1000: "Workout Equipment", // Clear weather
-      1063: "Fitness Accessories", // Light rain
-      1066: "Fitness Accessories", // Snow
-      1003: "Supplements", // Cloudy
-      1006: "Supplements", // Overcast
+      1000: "Workout Equipment",
+      1063: "Fitness Accessories",
+      1066: "Fitness Accessories",
+      1003: "Supplements",
+      1006: "Supplements",
     };
 
     const categoryName = categoryMapping[conditionCode] || "Workout Equipment";
@@ -186,60 +186,104 @@ document.getElementById("submit-location").addEventListener("click", async () =>
 
 let Productnames = [];
 let cachedResponse = null;
+
 async function askLlama() {
-  const city = document.getElementById("city").textContent;
-  const conditionCode = document.getElementById("weather-status").textContent;
-  
-  const userMessage = `Suggest fitness and workout routines suitable for the current weather in ${city}, ${conditionCode}, and that can be paired with products such as: ${Productnames.join(", ")}. Format your response with each suggestion having a category (starting with ** and ending with ** for the category), on a new line, without numbering. Provide at least 10 suggestions, including the category, detailed instructions or tutorials related to the categories, and also include step-by-step instructions on how to perform each exercise.`;
-  if (!userMessage) return;
+    const city = document.getElementById("city").textContent;
+    const conditionCode = document.getElementById("weather-status").textContent;
 
-  document.getElementById("workout-suggestion-reponse").innerHTML = "Thinking...";
+    const userMessage = `Suggest fitness and workout routines suitable for the current weather in ${city}, ${conditionCode}, and that can be paired with products such as: ${Productnames.join(", ")}. Format your response with each suggestion having a category (starting with ** and ending with ** for the category), on a new line, without numbering. Provide at least 10 suggestions, including the category, detailed instructions or tutorials related to the categories, and also include step-by-step instructions on how to perform each exercise.`;
+    if (!userMessage) return;
 
-  try {
-      const res = await fetch("https://backend-for-workout-synchronous.onrender.com/ask-llama", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: [{ role: "user", content: userMessage }] })
-      });
+    document.getElementById("loading-text").innerHTML = `
+        <p class="shimmer-text">Processing, please wait...
+        <img src="assets/icon/ai-models/Llama-3.3-70B-Instruct.svg" width="auto">
+        <img src="assets/icon/ai-models/open-ai-gpt-4o.svg" width="auto">
+        <img src="assets/icon/ai-models/Mistral Large 24.11.svg" width="5%"></p>
+    `;
 
-      const data = await res.json();
-      console.log(JSON.stringify(data, null, 2));
+    setTimeout(() => {
+        document.getElementById("loading-text").innerHTML += `
+            <p class="shimmer-text">This may take a few seconds...</p>
+        `;
+    }, 5000);
 
-      const rateLimitRemaining = res.headers.get("X-RateLimit-Remaining");
-      if (rateLimitRemaining === "0") {
-          console.log("Rate limit reached. Caching the response.");
-          cachedResponse = data;
-      }
 
-      document.getElementById("workout-suggestion-reponse").innerHTML = data.choices?.[0]?.message?.content
-        .split(/\n|\.\s/) 
-        .filter(line => line.trim() !== "")
-        .map(line => {
-          if (line.startsWith("**")) {
-            return `<h3>${line.replace(/\*\*/g, '').trim()}</h3>`;
-          }
-          return `<p>${line.replace(/\*\*/g, '').trim()}</p>`;
-        })
-        .join("") || "No response.";
+    try {
+        const res = await fetch("https://backend-for-workout-synchronous.onrender.com/ask-llama", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: [{ role: "user", content: userMessage }] })
+        });
 
-  } catch (error) {
-      if (cachedResponse) {
-          console.log("Using cached response.");
-          document.getElementById("workout-suggestion-reponse").innerHTML = cachedResponse.choices?.[0]?.message?.content
-            .split(/\n|\.\s/)
-            .filter(line => line.trim() !== "")
-            .map(line => {
-              if (line.startsWith("**")) {
-                return `<h3>${line.replace(/\*\*/g, '').trim()}</h3>`;
-              }
-              return `<p>${line.replace(/\*\*/g, '').trim()}</p>`;
-            })
-            .join("") || "No response.";
-      } else {
-          document.getElementById("workout-suggestion-reponse").innerHTML = `<span style="color: red;">Error: ${error.message}</span>`;
-      }
-  }
+        if (!res.ok) {
+            throw new Error(`HTTP Error! Status: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+
+        const workoutText = data.choices?.[0]?.message?.content || "No workout suggestions for today.";
+
+        const rateLimitRemaining = res.headers.get("X-RateLimit-Remaining");
+        if (rateLimitRemaining === "0") {
+            console.log("Rate limit reached. Caching the response.");
+            cachedResponse = data;
+        }
+
+        const aiModelIcons = {
+            "Llama-3.3-70B-Instruct": "assets/icon/ai-models/Llama-3.3-70B-Instruct.svg",
+            "gpt-4o": "assets/icon/ai-models/open-ai-gpt-4o.svg",
+            "Mistral-large-2411": "assets/icon/ai-models/Mistral Large 24.11.svg"
+        };
+
+        const modelUsed = data.model_used;
+        const modelIconPath = aiModelIcons[modelUsed] || "assets/icon/ai-models/Llama-3.3-70B-Instruct.svg";
+        document.getElementById("ai-model").innerHTML = `
+            <img src="${modelIconPath}" alt="${modelUsed}" style="height: 32px; width: 32px; margin-right: 8px; vertical-align: middle;">
+            <strong class="shimmer-text2 glow-text">${modelUsed}</strong>
+        `;
+
+        const workoutContainer = document.getElementById("workout-suggestion-response");
+        workoutContainer.innerHTML = "";
+
+        const lines = workoutText.split("\n");
+        let categoriesDivs = null;
+        let currentCategory = "";
+        let contentBuffer = [];
+
+        lines.forEach(line => {
+            if (line.startsWith("**") && line.endsWith("**")) {
+                if (categoriesDivs && contentBuffer.length > 0) {
+                    categoriesDivs.innerHTML = `<h3 class="category-title">${currentCategory}</h3>` + contentBuffer.join("");
+                    workoutContainer.appendChild(categoriesDivs);
+                }
+
+                categoriesDivs = document.createElement("div");
+                categoriesDivs.classList.add("categories");
+                document.querySelectorAll(".categories").forEach(el => el.classList.add("md-card2"));
+
+                currentCategory = line.replace(/\*\*/g, "").trim();
+                contentBuffer = [];
+
+            } else if (line.trim() !== "") {
+              contentBuffer.push(`<p>${line.replace(/\*\*/g, "").trim()}</p>`);
+            }
+            document.getElementById("loading-text").innerHTML = "";
+        });
+
+        if (categoriesDivs && contentBuffer.length > 0) {
+            categoriesDivs.innerHTML = `<h3 class="category-title">${currentCategory}</h3>` + contentBuffer.join("");
+            workoutContainer.appendChild(categoriesDivs);
+        }
+
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+        document.getElementById("workout-suggestion-response").innerHTML = `<span style="color: red;">${error.message}</span>`;
+    }
 }
+
+
+
 
 
 
@@ -264,7 +308,7 @@ async function initialize() {
       }
 
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await askLlama();
+    // await askLlama();
     },
     (error) => {
       console.error("Error fetching location:", error);

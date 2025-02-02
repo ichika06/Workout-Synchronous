@@ -4,20 +4,24 @@
   --md-sys-typescale-body-medium-size: 1rem;
   --md-sys-typescale-body-medium-line-height: 1.5rem;
   --md-sys-shape-corner-small: 4px;
+  --md-filled-tonal-button-container-shape: 13px;
+  --md-filled-tonal-button-container-color: var(--md-sys-color-primary);
   --md-sys-shape-corner-medium: 6px;
   --md-sys-shape-corner-large: 8px;
   --md-sys-color-surface: #b3b3b3;
   --md-filled-button-container-shape: 0px;
   --md-card-background-color: var(--md-sys-color-surface);
+  --md-filled-tonal-button-label-text-color: var(--md-sys-color-on-surface);
+  --md-filled-tonal-button-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-filled-tonal-button-hover-container-elevation: none;
   --md-card-color: var(--md-sys-color-on-surface);
   --md-sys-color-on-primary: #1D1C1F;
-  --md-sys-color-on-primary-secondary: #181818;
+  --md-sys-color-on-primary-secondary: #2c2b2b;
   --md-sys-color-on-surface: #E6E1E5;
   --md-sys-color-background: #131214;
   --md-menu-container-color: var(--md-sys-color-on-primary);
   --md-menu-container-shape: 8px;
   --md-sys-typescale-body-large-font: system-ui;
-
   --md-outlined-text-field-container-shape: 23px;
   --md-sys-typescale-body-large: 400 1rem system-ui;
   --md-sys-color-primary: #555555;
@@ -25,13 +29,8 @@
   --md-outlined-text-field-label-text-color: #e4f3f2;
 }
 
-
-md-menu-item {
-  border-radius: 8px;
-}
-
-md-menu-item::part(focus-ring) {
-  border-radius: 8px;
+.touch {
+  cursor: pointer;
 }
 
 md-filled-button.error {

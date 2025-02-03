@@ -290,25 +290,30 @@ async function askLlama() {
 
 async function initialize() {
   if (!navigator.geolocation) {
-    notif.error("Geolocation is not supported by your browser.");
+    notif.error("Geolocation is not allowed in your browser.");
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
     async (position) => {
-      const { latitude, longitude } = position.coords;
-      const locationData = await fetchCityAndCountry(latitude, longitude);
+      try {
+        const { latitude, longitude } = position.coords;
+        const locationData = await fetchCityAndCountry(latitude, longitude);
 
-      if (locationData.city && locationData.country) {
-        const conditionCode = await fetchCurrentWeather(locationData.city);
-        if (!conditionCode) return;
+        if (locationData.city && locationData.country) {
+          const conditionCode = await fetchCurrentWeather(locationData.city);
+          if (!conditionCode) return;
 
-        fetchForecastWeather(locationData.city);
-        fetchFitnessProducts(conditionCode);
+          await fetchForecastWeather(locationData.city);
+          await fetchFitnessProducts(conditionCode);
+
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          await askLlama();
+        }
+      } catch (error) {
+        console.error("Error during initialization:", error);
+        notif.error("Failed to load weather and fitness data.");
       }
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    await askLlama();
     },
     (error) => {
       console.error("Error fetching location:", error);
@@ -316,5 +321,6 @@ async function initialize() {
     }
   );
 }
+
 
 initialize();

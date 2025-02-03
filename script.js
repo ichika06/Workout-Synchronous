@@ -308,7 +308,7 @@ async function initialize() {
       }
 
     await new Promise(resolve => setTimeout(resolve, 1000));
-    // await askLlama();
+    await askLlama();
     },
     (error) => {
       console.error("Error fetching location:", error);
